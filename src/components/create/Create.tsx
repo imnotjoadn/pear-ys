@@ -5,7 +5,6 @@ import { RootState } from '../../redux/reducers';
 import { useFirebase } from '../../services/firebase';
 import { Button, makeStyles, TextField, Theme } from '@material-ui/core';
 import { createStyles } from '@material-ui/core';
-import {UserIsAuthenticated} from '../../auth';
 
 type PropsFromRedux = ConnectedProps<typeof connector>
 type Props = PropsFromRedux & {
@@ -71,8 +70,7 @@ const mapDispatchToProps = {
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
 
-export default UserIsAuthenticated(connector(Create));
-
+export default connector(Create);
 // http://react-redux-firebase.com/docs/recipes/routing.html#advanced
 
 // https://redux.js.org/recipes/usage-with-typescript

@@ -82,10 +82,4 @@ export class Firebase {
             // An error happened.
         }                 
     }
-
-    // async newRecipe(uid: string, recipe: Recipe) {
-    //     console.log(recipe);
-    //     const addedRecipe = await this.db.collection("recipes").add({...recipe, owner: uid});
-    //     return addedRecipe.id;
-    // }
 }

@@ -2,12 +2,9 @@ import { combineReducers } from "redux";
 import pairs from "./pairs";
 import activePair from "./activePair";
 import app from "./app";
-import {
-  firebaseReducer
-} from 'react-redux-firebase';
 
 
-const rootReducer = combineReducers({ pairs, activePair, app, firebaseReducer });
+const rootReducer = combineReducers({ pairs, activePair, app });
 
 export default rootReducer;
 
