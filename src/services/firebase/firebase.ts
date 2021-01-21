@@ -3,6 +3,7 @@ import * as firebase from 'firebase/app'; // no relative path =  get from node m
 import 'firebase/database'; // Realtime Database, NoSQl. e.g. sharing a state between multiple clients that is kept in sync
 import 'firebase/firestore'; // NoSQL, just send objects
 import 'firebase/auth';
+import { Comparison } from '../../pearys/Comparison';
 
 const firebaseConfig = {
     apiKey: "AIzaSyDzbwCsZNmBPdsAIG-isIzOzoIrGbNhwPg",
@@ -37,8 +38,6 @@ export class Firebase {
             callback(user);
         });
     }
-
-    // https://firebase.google.com/docs/auth/web/anonymous-auth
 
     private async signIn(userCredentialResult: firebase.auth.UserCredential): Promise<FirebaseUser | null> {
         try {
@@ -81,5 +80,10 @@ export class Firebase {
         } catch (error) {
             // An error happened.
         }                 
+    }
+
+    async newComparison(uid: string, comparison: Comparison) {
+        const addedRecipe = await this.db.collection("comparisons").add({...comparison, owner: uid});
+        return addedRecipe.id;
     }
 }
