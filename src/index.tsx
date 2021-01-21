@@ -6,20 +6,45 @@ import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';
 import { ThemeProvider } from '@material-ui/core/styles';
 import { Provider } from 'react-redux';
-import * as firebase from 'firebase/app';
+
+import firebase from 'firebase/app';
+import 'firebase/auth';
+import 'firebase/firestore';
 
 import theme from './theme';
-import store from './redux/store';
+import configureStore from './redux/store';
+import { createFirestoreInstance } from 'redux-firestore';
+import { ReactReduxFirebaseProvider } from 'react-redux-firebase';
+import { firebaseConfig, rrfConfig } from './constants/config';
+
+// Initialize Firebase instance
+firebase.initializeApp(firebaseConfig);
+firebase.firestore();
+
+const initialState = {
+  firebase: { authError: null },
+};
+const store = configureStore(initialState);
+
+const rrfProps = {
+  firebase,
+  config: rrfConfig,
+  dispatch: store.dispatch,
+  createFirestoreInstance,
+};
+
 
 ReactDOM.render(
   <React.StrictMode>
-      <BrowserRouter>
-        <ThemeProvider theme={theme}>
-          <Provider store={store}>
-            <App />
-          </Provider>
-        </ThemeProvider>
-      </BrowserRouter>    
+     <ReactReduxFirebaseProvider {...rrfProps}>
+        <BrowserRouter>
+          <ThemeProvider theme={theme}>
+            <Provider store={store}>
+              <App />
+            </Provider>
+          </ThemeProvider>
+        </BrowserRouter>
+      </ReactReduxFirebaseProvider>    
   </React.StrictMode>,
   document.getElementById('root')
 );

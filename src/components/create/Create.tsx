@@ -1,13 +1,17 @@
 import React, { useState } from 'react';
-import { useDispatch, connect, ConnectedProps } from 'react-redux';
+import { useDispatch, connect, ConnectedProps, useSelector} from 'react-redux';
 import { PairState } from '../../redux/reducers/pairs';
 import { RootState } from '../../redux/reducers';
-import { useFirebase } from '../../services/firebase';
+import { useFirebase } from 'react-redux-firebase';
 import { Button, makeStyles, TextField, Theme } from '@material-ui/core';
 import { createStyles } from '@material-ui/core';
+import { useHistory } from 'react-router';
+import * as routes from '../../constants/routes';
 
-type PropsFromRedux = ConnectedProps<typeof connector>
-type Props = PropsFromRedux & { }
+import { useFirestoreConnect, withFirestore, WithFirestoreProps} from 'react-redux-firebase'
+import {firestore} from 'firebase';
+// https://react-redux-firebase.com/docs/api/withFirebase.html
+
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -25,17 +29,27 @@ const useStyles = makeStyles((theme: Theme) =>
  * 
  * --> compare/GUID (instance)
  */
-function Create(props: Props) {
-    const classes = useStyles();
-    const firebase = useFirebase();
-    const [title, setTitle] = useState("");
-    
+type PropsFromRedux = ConnectedProps<typeof connector>
+type Props = PropsFromRedux & WithFirestoreProps & {}
 
-    const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => { setTitle(e.target.value) };
+function Create(props: Props) {
+    // useFirestoreConnect([
+    //     {collection: 'comparisons'}
+    // ])
+    // const comparisons = useSelector((state) => (state as any).firestore.ordered.comparisons);
+    // console.log(comparisons);
+
+    const classes = useStyles();
+    const history = useHistory();
+    const [title, setTitle] = useState("");    
+
+    const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {setTitle(e.target.value)};
     
     const onCreateClick = async () => {
-        // todo: appState.user!.uid        
-        const id = await firebase.newComparison("", {title});        
+        // Add a comparison
+        const comparison = {title};
+        const {id} = await props.firestore.add({ collection: 'comparisons'}, { title });
+        history.push(routes.COMPARISON.replace(routes.ID_IDENTIFIER, id)); 
     };
 
     return (
@@ -66,4 +80,4 @@ const mapDispatchToProps = {
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
 
-export default connector(Create);
+export default connector(withFirestore(Create));

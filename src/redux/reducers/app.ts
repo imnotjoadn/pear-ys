@@ -1,9 +1,9 @@
 import { SET_ACTIVEPAIR, ActivePairActions } from '../actionTypes';
 import { SetUserAction, AppActions, SET_USER } from '../actionTypes';
-import { FirebaseUser } from '../../services/firebase';
+// import { FirebaseUser } from '../../services/firebase';
 
 export interface AppState {
-  user: FirebaseUser | null;
+  user: any | null;
 }
 
 const initialState: AppState = {

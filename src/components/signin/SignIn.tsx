@@ -3,24 +3,24 @@ import { useDispatch, connect, ConnectedProps } from 'react-redux';
 import { RootState } from '../../redux/reducers';
 import { setUser } from '../../redux/actions';
 import { Button, makeStyles, TextField, Theme } from '@material-ui/core';
-import {firebase, FirebaseUser} from '../../services/firebase';
+// import {firebase, FirebaseUser} from '../../services/firebase';
 
 
 type PropsFromRedux = ConnectedProps<typeof connector>
 type Props = PropsFromRedux & {
-  setUser: (user: FirebaseUser) => void;
+  // setUser: (user: FirebaseUser) => void;
 }
 
 function SignIn(props: Props) {
 
   const onSigninWithGoogleClick = async () => {
-    const user = await firebase.signInWithGoogle();
-    props.setUser(user);
+    // const user = await firebase.signInWithGoogle();
+    // props.setUser(user);
   }
 
   const onSigninAnonymousClick = async () => {
-    const user = await firebase.signInAnonymously();
-    props.setUser(user);
+    // const user = await firebase.signInAnonymously();
+    // props.setUser(user);
   }
 
     return (

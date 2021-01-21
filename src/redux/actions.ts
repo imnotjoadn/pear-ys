@@ -1,5 +1,5 @@
 import { Pair } from '../lib/pair';
-import { FirebaseUser } from '../services/firebase';
+// import { FirebaseUser } from '../services/firebase';
 import {SET_DARKMODE, SetDarkModeAction, SET_USER, SetUserAction, SetActivePairAction, SET_ACTIVEPAIR} from './actionTypes';
 
 export function setDarkMode (darkMode: boolean): SetDarkModeAction {
@@ -9,7 +9,7 @@ export function setDarkMode (darkMode: boolean): SetDarkModeAction {
   }
 }
 
-export function setUser(user: FirebaseUser | null): SetUserAction {
+export function setUser(user: any | null): SetUserAction {
   return {
     type: SET_USER,
     user

@@ -8,7 +8,7 @@ import * as routes from './constants/routes';
 import Create from './components/create/Create';
 import SignIn from './components/signin/SignIn';
 import { RootState } from './redux/reducers';
-import { FirebaseUser } from './services/firebase';
+// import { FirebaseUser } from './services/firebase';
 
 
 function App() {
