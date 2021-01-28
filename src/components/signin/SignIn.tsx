@@ -3,6 +3,7 @@ import { useDispatch, connect, ConnectedProps } from 'react-redux';
 import { RootState } from '../../redux/reducers';
 import { setUser } from '../../redux/actions';
 import { Button, makeStyles, TextField, Theme } from '@material-ui/core';
+import { useFirebase } from 'react-redux-firebase';
 // import {firebase, FirebaseUser} from '../../services/firebase';
 
 
@@ -12,10 +13,12 @@ type Props = PropsFromRedux & {
 }
 
 function SignIn(props: Props) {
+  const firebase = useFirebase()
 
   const onSigninWithGoogleClick = async () => {
     // const user = await firebase.signInWithGoogle();
     // props.setUser(user);
+    return firebase.login({ provider: 'google', type: 'popup' })
   }
 
   const onSigninAnonymousClick = async () => {
