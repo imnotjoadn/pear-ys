@@ -1,19 +1,16 @@
 import React, { useState } from 'react';
-import { useDispatch, connect, ConnectedProps, useSelector} from 'react-redux';
-import { PairState } from '../../redux/reducers/pairs';
+import { connect, ConnectedProps} from 'react-redux';
 import { RootState } from '../../redux/reducers';
-import { useFirebase } from 'react-redux-firebase';
 import { Button, makeStyles, TextField, Theme } from '@material-ui/core';
 import { createStyles } from '@material-ui/core';
 import { useHistory } from 'react-router';
 import * as routes from '../../constants/routes';
 
-import { useFirestoreConnect, withFirestore, WithFirestoreProps} from 'react-redux-firebase'
-import {firestore} from 'firebase';
+import { withFirestore, WithFirestoreProps} from 'react-redux-firebase'
 // https://react-redux-firebase.com/docs/api/withFirebase.html
 
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
   createStyles({
     root: {
       display: 'flex',
@@ -47,7 +44,6 @@ function Create(props: Props) {
     
     const onCreateClick = async () => {
         // Add a comparison
-        const comparison = {title};
         const {id} = await props.firestore.add({ collection: 'comparisons'}, { title });
         history.push(routes.COMPARISON.replace(routes.ID_IDENTIFIER, id)); 
     };
@@ -69,7 +65,7 @@ function Create(props: Props) {
     );
 }
 
-const mapStateToProps = (state: RootState) => {
+const mapStateToProps = () => {
     return {
         
     }

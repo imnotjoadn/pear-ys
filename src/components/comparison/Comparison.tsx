@@ -1,8 +1,8 @@
 import React from 'react';
-import { useDispatch, useSelector, connect, ConnectedProps } from 'react-redux';
+import { useSelector, connect, ConnectedProps } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { RootState } from '../../redux/reducers';
-import { useFirestoreConnect, withFirestore, WithFirestoreProps, isLoaded } from 'react-redux-firebase'
+import { useFirestoreConnect, isLoaded } from 'react-redux-firebase'
 import { Pair } from '../../lib/pair';
 
 type PropsFromRedux = ConnectedProps<typeof connector>
