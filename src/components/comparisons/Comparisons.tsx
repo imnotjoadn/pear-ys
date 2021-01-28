@@ -18,7 +18,7 @@ function Comparisons(props: Props) {
     if (!isLoaded(comparisons)) {
         return <span>Loading...</span>
     }
-
+ 
     if (isEmpty(comparisons)) {
         return <span>No comparisons...</span>
     }
