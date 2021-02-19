@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector, connect, ConnectedProps } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { RootState } from '../../redux/reducers';
-import { useFirestoreConnect, isLoaded } from 'react-redux-firebase'
+import { FirebaseReducer, useFirestoreConnect, isEmpty, isLoaded } from 'react-redux-firebase'
 import { Pair } from '../../lib/pair';
 
 type PropsFromRedux = ConnectedProps<typeof connector>
@@ -12,21 +12,31 @@ interface ComparisonParams {
     id: string;
 }
 
-function Comparison(props: Props) {
+function Comparison() {
     const { id: pairId } = useParams<ComparisonParams>();
+
+    const {uid} = useSelector<RootState, FirebaseReducer.AuthState>(state => state.firebase.auth);
+
+    console.log(uid, pairId);
+    // https://blog.logrocket.com/getting-started-react-redux-firebase/
 
     useFirestoreConnect([
         {
             collection: 'comparisons',
-            doc: pairId
+            doc: pairId,
+            storeAs: 'comparison'
         }
     ]);
 
     const pair = useSelector<RootState, Pair>((state: RootState) =>
-        state.firestore.data.comparisons && state.firestore.data.comparisons[pairId]);
+        state.firestore.data.comparison);
 
     if (!isLoaded(pair)) {
         return <span>Loading...</span>
+    }
+
+    if (isEmpty(pair)) {
+        return <span>404</span>
     }
 
     return (
@@ -47,4 +57,4 @@ const mapDispatchToProps = {
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
 
-export default connector(Comparison);
+export default Comparison;

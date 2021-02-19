@@ -4,21 +4,37 @@ import { RootState } from '../../redux/reducers';
 import { setUser } from '../../redux/actions';
 import { Button, makeStyles, TextField, Theme } from '@material-ui/core';
 import { useFirebase } from 'react-redux-firebase';
+import { RouteComponentProps, RouteProps, StaticContext, useHistory } from 'react-router';
+import * as H from 'history';
+import { HOME } from '../../constants/routes';
 // import {firebase, FirebaseUser} from '../../services/firebase';
 
 
-type PropsFromRedux = ConnectedProps<typeof connector>
-type Props = PropsFromRedux & {
-  // setUser: (user: FirebaseUser) => void;
+// type PropsFromRedux = ConnectedProps<typeof connector>
+// type Props = PropsFromRedux & {
+//   // setUser: (user: FirebaseUser) => void;
+// }
+interface Props extends RouteComponentProps<{}, StaticContext, PState> {
+  
 }
 
+interface PState {
+  from?: {
+    pathname?: string;
+  }
+}
+
+
 function SignIn(props: Props) {
-  const firebase = useFirebase()
+  const firebase = useFirebase();
+  const history = useHistory();
 
   const onSigninWithGoogleClick = async () => {
     // const user = await firebase.signInWithGoogle();
     // props.setUser(user);
-    return firebase.login({ provider: 'google', type: 'popup' })
+    await firebase.login({ provider: 'google', type: 'popup' });
+    const from = props.location?.state?.from?.pathname;
+    history.push(from ?? HOME);
   }
 
   const onSigninAnonymousClick = async () => {
@@ -35,16 +51,16 @@ function SignIn(props: Props) {
     );
 }
 
-const mapStateToProps = (state: RootState) => {
-    return {
+// const mapStateToProps = (state: RootState) => {
+//     return {
         
-    }
-}
+//     }
+// }
 
-const mapDispatchToProps = {
-  setUser
-}
+// const mapDispatchToProps = {
+//   setUser
+// }
 
-const connector = connect(mapStateToProps, mapDispatchToProps);
+// const connector = connect(mapStateToProps, mapDispatchToProps);
 
-export default connector(SignIn);
+export default SignIn;

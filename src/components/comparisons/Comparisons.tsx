@@ -1,19 +1,28 @@
 import React from 'react';
 import { useSelector, connect, ConnectedProps } from 'react-redux';
+import { compose } from 'redux';
 import { RootState } from '../../redux/reducers';
-import { useFirestoreConnect, isLoaded, isEmpty } from 'react-redux-firebase'
+import { useFirestoreConnect, isLoaded, isEmpty, FirebaseReducer, firestoreConnect } from 'react-redux-firebase'
 import { Pair } from '../../lib/pair';
 
-type PropsFromRedux = ConnectedProps<typeof connector>
-type Props = PropsFromRedux & {}
+import * as routes from '../../constants/routes';
+// type PropsFromRedux = ConnectedProps<typeof connector>
+// type Props = PropsFromRedux & {
+//     auth: FirebaseReducer.AuthState;
+// }
 
-function Comparisons(props: Props) {
-    useFirestoreConnect([{
-        collection: 'comparisons',
-        storeAs: "list"
-      }]) // sync todos collection from Firestore into redux
+function Comparisons() {
+    const {uid} = useSelector<RootState, FirebaseReducer.AuthState>(state => state.firebase.auth);
 
-    const comparisons = useSelector<RootState, Pair[]>((state: RootState) => state.firestore.ordered.list);
+    useFirestoreConnect([
+        {
+            collection: `comparisons`,
+            where: [['owner', '==', uid]],
+            storeAs: 'list'
+        }
+    ]);
+
+    const comparisons = useSelector<RootState, Pair[]>(state => state.firestore.ordered.list);   
 
     if (!isLoaded(comparisons)) {
         return <span>Loading...</span>
@@ -37,21 +46,11 @@ function Comparisons(props: Props) {
         <React.Fragment>
             <ul>
                 {comparisons && comparisons.map((comparison) =>
-                    <li key={comparison.id}>{comparison.title}</li>)}
+                    <li key={comparison.id}><a href={routes.COMPARISON.replace(routes.ID_IDENTIFIER, comparison.id!)}>{comparison.title}</a></li>)}
             </ul>
         </React.Fragment>
     );
 }
 
-const mapStateToProps = (state: RootState) => {
-    return {
-
-    }
-}
-
-const mapDispatchToProps = {
-}
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
-
-export default connector(Comparisons);
+export default Comparisons;
+  

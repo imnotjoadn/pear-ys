@@ -1,0 +1,31 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{userId} {
+      allow read, write: if request.auth.uid == userId;
+    }
+    match /comparisons/{comparisonId} {
+    
+       function isSignedIn() {
+           return request.auth != null;
+       }
+       
+       function isOwner() {
+          // If the current user is the owner, return true.          
+          return request.auth.uid == resource.data.owner;
+       }
+       
+       function isPublic() {
+          // If the build is public, return true.
+          return resource.data.isPublic;
+       }
+       
+       function isNewComparison() {
+         return resource == null;
+       }
+       
+       allow read: if isPublic() || (isSignedIn() && isOwner());
+       allow write: if isSignedIn() && (isNewComparison() || isOwner());
+    }
+  }
+}

@@ -12,7 +12,7 @@ import { useHistory } from 'react-router';
 import * as routes from '../../constants/routes';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/reducers';
-import { useFirebase, isLoaded, isEmpty } from 'react-redux-firebase';
+import { FirebaseReducer, useFirebase, isLoaded, isEmpty } from 'react-redux-firebase';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -26,10 +26,6 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 
-interface UserProfile 
-{
-    displayName: string | null
-}
 
 // https://firebase.google.com/docs/auth/web/manage-users   as 
 export default function PearysAppBar() {
@@ -37,7 +33,7 @@ export default function PearysAppBar() {
     const firebase = useFirebase();
     const history = useHistory();
 
-    const auth = useSelector<RootState, UserProfile>(state => state.firebase.auth);
+    const auth = useSelector<RootState, FirebaseReducer.AuthState>(state => state.firebase.auth);
     
     if (!isLoaded(auth)) return <div>splash screen...</div>;
     
