@@ -32,13 +32,13 @@ function SignIn(props: Props) {
     history.push(from ?? HOME);
   }
 
-    return (
-        <React.Fragment>
-          <div>Sign In</div>
-          <Button variant="contained" onClick={onSigninWithGoogleClick}>Sign in with Google</Button>  
-          <Button variant="contained" onClick={onSigninAnonymousClick}>Continue as Guest</Button>
-        </React.Fragment>
-    );
+  return (
+      <React.Fragment>
+        <div>Sign In</div>
+        <Button variant="contained" onClick={onSigninWithGoogleClick}>Sign in with Google</Button>  
+        <Button variant="contained" onClick={onSigninAnonymousClick}>Continue as Guest</Button>
+      </React.Fragment>
+  );
 }
 
 export default SignIn;

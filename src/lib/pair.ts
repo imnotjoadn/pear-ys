@@ -3,7 +3,7 @@ export interface Pair {
     owner: string; // a firebase uid
     id?: string;
     title: string;
-    items: string[];    
+    items: string[];
 }
 
 // TODO: how will I ever name my child
