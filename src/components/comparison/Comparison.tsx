@@ -35,7 +35,7 @@ function Comparison() {
         return <span>Loading...</span>
     }
 
-    if (isEmpty(pair)) {
+    if (isEmpty(pair) || !pair?.owner ) {
         return <span>404</span>
     }
 

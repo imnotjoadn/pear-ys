@@ -30,16 +30,18 @@ function SignIn(props: Props) {
   const history = useHistory();
 
   const onSigninWithGoogleClick = async () => {
-    // const user = await firebase.signInWithGoogle();
-    // props.setUser(user);
     await firebase.login({ provider: 'google', type: 'popup' });
-    const from = props.location?.state?.from?.pathname;
-    history.push(from ?? HOME);
+    redirect();
   }
 
   const onSigninAnonymousClick = async () => {
-    // const user = await firebase.signInAnonymously();
-    // props.setUser(user);
+    const user = await firebase.auth().signInAnonymously()
+    redirect();
+  }
+
+  const redirect = () => {
+    const from = props.location?.state?.from?.pathname;
+    history.push(from ?? HOME);
   }
 
     return (
