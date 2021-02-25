@@ -1,21 +1,10 @@
 import React from 'react';
-import { useDispatch, connect, ConnectedProps } from 'react-redux';
-import { RootState } from '../../redux/reducers';
-import { setUser } from '../../redux/actions';
 import { Button, makeStyles, TextField, Theme } from '@material-ui/core';
 import { useFirebase } from 'react-redux-firebase';
 import { RouteComponentProps, RouteProps, StaticContext, useHistory } from 'react-router';
-import * as H from 'history';
 import { HOME } from '../../constants/routes';
-// import {firebase, FirebaseUser} from '../../services/firebase';
-
-
-// type PropsFromRedux = ConnectedProps<typeof connector>
-// type Props = PropsFromRedux & {
-//   // setUser: (user: FirebaseUser) => void;
-// }
 interface Props extends RouteComponentProps<{}, StaticContext, PState> {
-  
+
 }
 
 interface PState {
@@ -23,7 +12,6 @@ interface PState {
     pathname?: string;
   }
 }
-
 
 function SignIn(props: Props) {
   const firebase = useFirebase();
@@ -52,17 +40,5 @@ function SignIn(props: Props) {
         </React.Fragment>
     );
 }
-
-// const mapStateToProps = (state: RootState) => {
-//     return {
-        
-//     }
-// }
-
-// const mapDispatchToProps = {
-//   setUser
-// }
-
-// const connector = connect(mapStateToProps, mapDispatchToProps);
 
 export default SignIn;
