@@ -59,15 +59,13 @@ function Create() {
 
     const onCreateClick = async () => {
         // Add a comparison
-        setShouldValidate(true);
-        if(!validateTitle()) {
+        setShouldValidate(true); 
+        if(!validateTitle() || !validateItems()) {
             return;
         }
-        // TODO: validate whole form on create click
-        // TODO: re-enable this code.
-        // const pair: Pair = {title, owner: auth.uid, items: items };
-        // const { id } = await firestore.collection('comparisons').add(pair);
-        // history.push(routes.COMPARISON.replace(routes.ID_IDENTIFIER, id));
+        const pair: Pair = {title, owner: auth.uid, items: items };
+        const { id } = await firestore.collection('comparisons').add(pair);
+        history.push(routes.COMPARISON.replace(routes.ID_IDENTIFIER, id));
     };
 
     const onAddClick = () => {
@@ -91,7 +89,7 @@ function Create() {
     /**
      * Determines whether or not an error on an item exists.
      */
-    const hasItemError = (item: string, idx: number): [boolean, string] => {
+    const hasItemError = (item: string): [boolean, string] => {
         // Look up item in items, and see if I find it twice? it's duped.
         // Remove myself and check indexOf. O(n^2)
         const isEmpty = shouldValidate && !item.length;
@@ -127,6 +125,12 @@ function Create() {
         return valid;
     }
 
+    const validateItems = () => {
+        return items.reduce((previousValue, currentValue) => {
+            return previousValue && !hasItemError(currentValue)[0];
+        }, true);
+    }
+
     // https://reactjs.org/docs/handling-events.html
     // https://stackoverflow.com/questions/54934975/react-hooks-how-to-avoid-redeclaring-functions-on-every-render
     // https://reactjs.org/docs/hooks-reference.html#usecallback
@@ -147,7 +151,7 @@ function Create() {
             onChange={handleTitleChange} />
         {items.map((item, idx) => {
             // JS:
-            const [error, helperText] = hasItemError(item, idx);
+            const [error, helperText] = hasItemError(item);
             return (
                 <Item
                     {...{error, helperText}}

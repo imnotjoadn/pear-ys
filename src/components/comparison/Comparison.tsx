@@ -42,6 +42,9 @@ function Comparison() {
     return (
         <React.Fragment>
             {`Pair ${pair.title}`}
+            <ul>
+                {pair.items.map((item) => <li>{item}</li>)}
+            </ul>
         </React.Fragment>
     );
 }
