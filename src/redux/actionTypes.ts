@@ -1,4 +1,4 @@
-import { Pair } from "../lib/pair";
+import { Pairwise } from "../lib/pair";
 // import { FirebaseUser } from "../services/firebase";
 
 export const SET_DARKMODE = "SET_DARKMODE";
@@ -12,7 +12,7 @@ export type PairActions = SetDarkModeAction; // | union other pairactions
 export const SET_ACTIVEPAIR = "SET_ACTIVEPAIR";
 export interface SetActivePairAction {
   type: typeof SET_ACTIVEPAIR,
-  pair: Pair 
+  pair: Pairwise 
 }
 
 export type ActivePairActions = SetActivePairAction;

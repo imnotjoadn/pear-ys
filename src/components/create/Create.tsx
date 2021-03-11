@@ -8,7 +8,7 @@ import * as routes from '../../constants/routes';
 import Item from './Item';
 
 import { FirebaseReducer, useFirestore, withFirestore, WithFirestoreProps} from 'react-redux-firebase'
-import { Pair } from '../../lib/pair';
+import { Pairwise } from '../../lib/pair';
 // https://react-redux-firebase.com/docs/api/withFirebase.html
 
 
@@ -63,7 +63,7 @@ function Create() {
         if(!validateTitle() || !validateItems()) {
             return;
         }
-        const pair: Pair = {title, owner: auth.uid, items: items };
+        const pair: Pairwise = {title, owner: auth.uid, items: items };
         const { id } = await firestore.collection('comparisons').add(pair);
         history.push(routes.COMPARISON.replace(routes.ID_IDENTIFIER, id));
     };

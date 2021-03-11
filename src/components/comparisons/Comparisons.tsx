@@ -3,12 +3,12 @@ import { useSelector, connect, ConnectedProps } from 'react-redux';
 import { compose } from 'redux';
 import { RootState } from '../../redux/reducers';
 import { useFirestoreConnect, isLoaded, isEmpty, FirebaseReducer, firestoreConnect } from 'react-redux-firebase'
-import { Pair } from '../../lib/pair';
+import { Pairwise } from '../../lib/pair';
 
 import * as routes from '../../constants/routes';
 // type PropsFromRedux = ConnectedProps<typeof connector>
 // type Props = PropsFromRedux & {
-//     auth: FirebaseReducer.AuthState;
+//     auth: FirebaseReducer.AuthState; 
 // }
 
 function Comparisons() {
@@ -22,7 +22,7 @@ function Comparisons() {
         }
     ]);
 
-    const comparisons = useSelector<RootState, Pair[]>(state => state.firestore.ordered.list);   
+    const comparisons = useSelector<RootState, Pairwise[]>(state => state.firestore.ordered.list);   
 
     if (!isLoaded(comparisons)) {
         return <span>Loading...</span>

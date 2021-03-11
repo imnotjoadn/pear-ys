@@ -30,9 +30,11 @@ NC2 -> n! / ((n-k)!k!)
 Share - 
 
 Rough plan: 
-    - Create - add the options for your comparison
-    - Compare - iterate through the pair combinations
-    - Review - results
+  - Create - add the options for your comparison ✔
+  - Compare - iterate through the pair combinations (Start button)
+  - Review - results: 
+    - Author: would see heatmap graph (public option?)
+    - View their own results
 
 
 Tech stack: 

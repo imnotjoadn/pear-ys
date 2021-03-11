@@ -1,9 +1,9 @@
 import { SET_ACTIVEPAIR, ActivePairActions } from '../actionTypes';
 import { SetActivePairAction } from '../actionTypes';
-import { Pair } from '../../lib/pair';
+import { Pairwise } from '../../lib/pair';
 
 export interface ActivePairState {
-  pair: Pair | null;
+  pair: Pairwise | null;
 }
 
 const initialState: ActivePairState = {

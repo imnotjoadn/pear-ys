@@ -3,7 +3,7 @@ import { useSelector, connect, ConnectedProps } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { RootState } from '../../redux/reducers';
 import { FirebaseReducer, useFirestoreConnect, isEmpty, isLoaded } from 'react-redux-firebase'
-import { Pair } from '../../lib/pair';
+import { Pairwise } from '../../lib/pair';
 
 type PropsFromRedux = ConnectedProps<typeof connector>
 type Props = PropsFromRedux & {}
@@ -28,7 +28,7 @@ function Comparison() {
         }
     ]);
 
-    const pair = useSelector<RootState, Pair>((state: RootState) =>
+    const pair = useSelector<RootState, Pairwise>((state: RootState) =>
         state.firestore.data.comparison);
 
     if (!isLoaded(pair)) {

@@ -6,7 +6,7 @@ import { firebaseReducer as firebase, FirebaseReducer, FirestoreReducer } from '
 import pairs from "./pairs";
 import activePair from "./activePair";
 import app from "./app";
-import { Pair } from "../../lib/pair";
+import { Pairwise } from "../../lib/pair";
 
 interface UserProfile {
   email: string
@@ -14,7 +14,7 @@ interface UserProfile {
 
 // create schema for the DB
 interface DBSchema {
-  comparisons: Pair
+  comparisons: Pairwise
   [name: string]: any
 }
 
