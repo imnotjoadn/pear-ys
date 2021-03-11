@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState } from 'react';
 import { connect, ConnectedProps, useSelector} from 'react-redux';
 import { RootState } from '../../redux/reducers';
 import { Button, makeStyles, TextField, Theme } from '@material-ui/core';
@@ -27,6 +27,14 @@ const useStyles = makeStyles(() =>
  * Button: Create comparison.
  * 
  * --> compare/GUID (instance)
+ * 
+ * Validation
+ *  - Title required ✅
+ *  - No empty items (or notify)
+ *  - No dupes
+ *  - Removing items
+ * 
+ * Backspace items > 2
  */
 // type PropsFromRedux = ConnectedProps<typeof connector>
 // type Props = PropsFromRedux & WithFirestoreProps & {}
@@ -34,21 +42,32 @@ const useStyles = makeStyles(() =>
 function Create() {
     const classes = useStyles();
     const history = useHistory();
-    const [title, setTitle] = useState("");
-    const [items, setItems] = useState(["",""]);
-    const [lastAddedIdx, setLastAdded] = useState(-1);
-
-    const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {setTitle(e.target.value)};
+    const [title, setTitle] = useState<string>('');
+    const [items, setItems] = useState<string[]>(['', '']);
+    const [lastAddedIdx, setLastAdded] = useState(-1);    
+    const [isTitleValid, setIsTitleValid] = useState(true);
+    const [shouldValidate, setShouldValidate] = useState(false);
+    const [duplicateDictionary] = useState<Map<string, number>>(new Map());
+    
+    const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setTitle(e.target.value);
+    };
     
     const auth = useSelector<RootState, FirebaseReducer.AuthState>(state => state.firebase.auth);
 
     const firestore = useFirestore();
 
     const onCreateClick = async () => {
-        // Add a comparison        
-        const pair: Pair = {title, owner: auth.uid, items: items };
-        const { id } = await firestore.collection('comparisons').add(pair);
-        history.push(routes.COMPARISON.replace(routes.ID_IDENTIFIER, id)); 
+        // Add a comparison
+        setShouldValidate(true);
+        if(!validateTitle()) {
+            return;
+        }
+        // TODO: validate whole form on create click
+        // TODO: re-enable this code.
+        // const pair: Pair = {title, owner: auth.uid, items: items };
+        // const { id } = await firestore.collection('comparisons').add(pair);
+        // history.push(routes.COMPARISON.replace(routes.ID_IDENTIFIER, id));
     };
 
     const onAddClick = () => {
@@ -58,40 +77,67 @@ function Create() {
         setItems([...items, '']);
     }
 
-    const onItemChange = (e: React.ChangeEvent<HTMLInputElement>, idx: number) => {
-        setTitle(e.target.value)
-    };
-
     const handleItemChange = (idx: number, value: string) => {
+        let previousItem = items[idx];
+        // decrement previous
+        previousItem && duplicateDictionary.set(previousItem, duplicateDictionary.get(previousItem)! - 1);
+        // increment current
+        value && duplicateDictionary.set(value, (duplicateDictionary.get(value) ?? 0) + 1);
+
         items[idx] = value;
         setItems([...items]); // No change made. No need to render.
     }
+    
+    /**
+     * Determines whether or not an error on an item exists.
+     */
+    const hasItemError = (item: string, idx: number): [boolean, string] => {
+        // Look up item in items, and see if I find it twice? it's duped.
+        // Remove myself and check indexOf. O(n^2)
+        const isEmpty = shouldValidate && !item.length;
+        const hasDupes = shouldValidate && duplicateDictionary.get(item)! >= 2;
+        const hasError = isEmpty || hasDupes;
+        const helperText = isEmpty ? 'Required field.' : (hasDupes ? 'No dupes yo!' : '');
+        return [hasError, helperText];
+    }    
 
     // https://keycode.info/
     const onEnterClicked = (idx: number) => {
-        items.splice(idx + 1, 0, "");
+        items.splice(idx + 1, 0, '');
         setItems([...items]);
         setLastAdded(idx + 1);
+    }
+
+    const onBackSpaceClicked = (idx: number) => {
+        if (items.length <= 2) {
+            return;
+        }
+        items.splice(idx, 1);
+        setItems([...items]);
+        // setLastAdded(idx == 0 ? idx : idx - 1);        
+        // setLastAdded((idx - 1) || idx);
+        // setLastAdded(((idx - 1 > 0) && idx - 1) || idx);
+        setLastAdded(Math.max(idx - 1, 0));
+    }
+
+    const validateTitle = () => {
+        const valid = !!title?.length;
+        setIsTitleValid(!!title?.length);
+        // Validate items
+        return valid;
     }
 
     // https://reactjs.org/docs/handling-events.html
     // https://stackoverflow.com/questions/54934975/react-hooks-how-to-avoid-redeclaring-functions-on-every-render
     // https://reactjs.org/docs/hooks-reference.html#usecallback
-
-
-    // Text fields, with a + button to add more.
-    // Start with 2x component, don't let proceed without completing (validation)
-    // Each click/enter add new component
-    // 
-
-    // Next time: 
-    // - Validation
-    // - UI styling, make it look like a form.
-
+    // error={hasItemError(item, idx)}
+    //                 helperText={}
     return (
         <div className={classes.root}>
         <TextField
             autoFocus
+            error={shouldValidate && !title.length}
+            helperText={(shouldValidate && !title.length) && "Required field."}
             required
             fullWidth
             id="outlined-required"
@@ -100,17 +146,21 @@ function Create() {
             value={title}
             onChange={handleTitleChange} />
         {items.map((item, idx) => {
+            // JS:
+            const [error, helperText] = hasItemError(item, idx);
             return (
-                <Item 
+                <Item
+                    {...{error, helperText}}
                     variant="outlined"
-                    required
+                    required                    
                     label={`Item ${idx + 1}`}
                     key={`item_${idx}`}
                     index={idx} 
-                    focus={idx === lastAddedIdx} 
-                    value={item} 
+                    focus={idx === lastAddedIdx}
+                    value={item}
                     onValueChanged={handleItemChange} 
                     onEnterClicked={onEnterClicked}
+                    onBackSpaceClicked={onBackSpaceClicked}
                     onFocused={() => setLastAdded(-1)} />)
         })}
         <Button onClick={onAddClick}>Add</Button>
@@ -131,7 +181,6 @@ const mapDispatchToProps = {
 // const connector = connect(mapStateToProps, mapDispatchToProps);
 
 // export default connector(withFirestore(Create));
-
 
 // const connector = connect(mapStateToProps, mapDispatchToProps);
 

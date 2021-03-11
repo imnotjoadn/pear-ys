@@ -7,13 +7,14 @@ interface ItemProps extends OutlinedTextFieldProps {
   focus?: boolean;
   onValueChanged: (index: number, value: string) => void;
   onEnterClicked: (index: number) => void;
+  onBackSpaceClicked: (index: number) => void;
   onFocused: () => void;
 }
 
 function Item(props: ItemProps) {
     // IF focused, then focus.
     // Then call ClearLastIdx.
-    const {index, onValueChanged, onEnterClicked, onFocused, focus, ...rest} = props;
+    const {index, onValueChanged, onEnterClicked, onBackSpaceClicked, onFocused, focus, ...rest} = props;
     
     const ref = useRef<HTMLInputElement>(null);
     
@@ -29,6 +30,10 @@ function Item(props: ItemProps) {
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === "Enter") {
           onEnterClicked(index);
+        } else if (e.key === "Backspace") {          
+          if (!ref.current?.value) {
+            onBackSpaceClicked(index);
+          }
         }
     }
 
