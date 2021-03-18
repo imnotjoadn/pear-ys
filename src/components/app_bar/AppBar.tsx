@@ -16,16 +16,26 @@ import { FirebaseReducer, useFirebase, isLoaded, isEmpty } from 'react-redux-fir
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
-        root: {
+        root: {            
+            display: "flex",
+            justifyContent: "space-between",
             flexGrow: 1,
         },
         title: {
             flexGrow: 1,
         },
+        brandingContainer: {
+            display: "flex",
+            flexDirection: "column",
+        },
+        userContainer: {
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "end",
+            alignItems: "center",
+        },
     }),
 );
-
-
 
 // https://firebase.google.com/docs/auth/web/manage-users   as 
 export default function PearysAppBar() {
@@ -40,8 +50,7 @@ export default function PearysAppBar() {
     const loggedIn = !isEmpty(auth);
     const displayName = auth.displayName;
     const brandName = '🍐ys';
-
-    
+    const tagline = 'making decisions simple'    
     
     const handleHomeClick = () => history.push(routes.HOME);
     const handleSignInClick = async () => history.push(routes.SIGNIN);
@@ -49,24 +58,31 @@ export default function PearysAppBar() {
     
     return (
         <AppBar position="sticky">
-            <Toolbar variant="regular">
-                <Typography variant="h6" onClick={handleHomeClick} className={classes.title}>
-                    {brandName}
-                </Typography>
-                {displayName}
-                <IconButton
-                    edge="end"
-                    onClick={handleSignInClick}
-                    color="inherit"
-                >
-                <AccountCircleIcon />
-                </IconButton>
-                {loggedIn && <IconButton
-                    edge="end"
-                    onClick={handleLogoutClick}
-                    color="inherit">
-                    <LogoutIcon />
-                </IconButton>}
+            <Toolbar variant="regular" className={classes.root}>
+                <div className={classes.brandingContainer}>
+                    <Typography variant="h6" onClick={handleHomeClick} className={classes.title}>
+                        {brandName}
+                    </Typography>
+                    <Typography variant="caption">
+                        {tagline}
+                    </Typography>
+                </div>
+                <div className={classes.userContainer}>
+                    {displayName}
+                    <IconButton
+                        edge="end"
+                        onClick={handleSignInClick}
+                        color="inherit"
+                    >
+                    <AccountCircleIcon />
+                    </IconButton>
+                    {loggedIn && <IconButton
+                        edge="end"
+                        onClick={handleLogoutClick}
+                        color="inherit">
+                        <LogoutIcon />
+                    </IconButton>}
+                </div>                
             </Toolbar>
         </AppBar>
     );

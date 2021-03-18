@@ -16,7 +16,7 @@ function Comparisons() {
 
     useFirestoreConnect([
         {
-            collection: `comparisons`,
+            collection: `pairwise`,
             where: [['owner', '==', uid]],
             storeAs: 'list'
         }

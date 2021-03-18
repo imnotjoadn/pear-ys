@@ -16,8 +16,9 @@ export interface Pairwise {
 // result = [null, null];
 // Client side shuffling.
 export interface DoComparison {
-    timestamp: string; // ? long?
-    id: string; // Ref / Share later.
+    owner: string; // a firebase uid
+    timestamp: number; // ? long?
+    id?: string; // Ref / Share later.
     pairId: string;
     result: boolean[]; // of length 0 -> (items.length) C 2
 }

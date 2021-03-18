@@ -3,6 +3,7 @@ import { createMuiTheme } from '@material-ui/core/styles';
 import deepOrange from "@material-ui/core/colors/deepOrange";
 import amber from "@material-ui/core/colors/amber";
 import grey from "@material-ui/core/colors/grey";
+import { green } from '@material-ui/core/colors';
 
 // Helpful links
 // https://coolors.co/
@@ -23,7 +24,6 @@ import grey from "@material-ui/core/colors/grey";
 //     zIndex: ZIndex;
 //     unstable_strictMode?: boolean;
 //   }
-
 
 // export interface Palette {
 //     common: CommonColors;
@@ -64,10 +64,10 @@ import grey from "@material-ui/core/colors/grey";
 const theme = createMuiTheme({
     palette: {
         primary: {
-            main: grey[100],
+            main: green[200],
         },
         secondary: {
-            main: amber[800],
+            main: green[800],
         },
         background: {
             default: grey[100],

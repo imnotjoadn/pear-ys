@@ -1,22 +1,66 @@
 import React, { useState } from 'react';
 import { connect, ConnectedProps, useSelector} from 'react-redux';
 import { RootState } from '../../redux/reducers';
-import { Button, makeStyles, TextField, Theme } from '@material-ui/core';
+import { Button, makeStyles, Paper, TextField, Theme, Typography, IconButton } from '@material-ui/core';
 import { createStyles } from '@material-ui/core';
 import { useHistory } from 'react-router';
 import * as routes from '../../constants/routes';
+import AddIcon from '@material-ui/icons/Add';
 import Item from './Item';
 
 import { FirebaseReducer, useFirestore, withFirestore, WithFirestoreProps} from 'react-redux-firebase'
 import { Pairwise } from '../../lib/pair';
 // https://react-redux-firebase.com/docs/api/withFirebase.html
 
+const formSpacing = "0.75rem";
 
-const useStyles = makeStyles(() =>
+const useStyles = makeStyles((theme) =>
   createStyles({
     root: {
       display: 'flex',
-      flexWrap: 'wrap',
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    paper: {
+        maxWidth: "40rem",
+        margin: theme.spacing(3),
+        padding: theme.spacing(2),
+    },
+    form: {
+
+    },
+    heading: {
+        textAlign: 'center',
+    },
+    title: {
+        marginBottom: theme.spacing(2),
+    },
+    itemContainer: {
+        flexBasis: "49%",
+        display: 'flex'
+    },
+    item: {
+        marginBottom: theme.spacing(1),
+        flexGrow: 1,
+        // width: `calc(100% - ${theme.spacing(0.3) * 2}px)`,
+    },
+    itemsContainer: {
+        display: 'flex',
+        flexWrap: "wrap",
+        justifyContent: "space-between",
+    },
+    add: {
+        marginBottom: theme.spacing(1),
+        flexGrow: 1,
+    },    
+    footer: {
+        marginTop: theme.spacing(1),
+        display: "flex",
+        flexDirection: "row-reverse",
+        // justifyContent: 'flex-end'
+    },
+    create: {
+        
     },
     }),
 );
@@ -43,7 +87,7 @@ function Create() {
     const classes = useStyles();
     const history = useHistory();
     const [title, setTitle] = useState<string>('');
-    const [items, setItems] = useState<string[]>(['', '']);
+    const [items, setItems] = useState<string[]>(['', '', '']);
     const [lastAddedIdx, setLastAdded] = useState(-1);    
     const [isTitleValid, setIsTitleValid] = useState(true);
     const [shouldValidate, setShouldValidate] = useState(false);
@@ -64,7 +108,7 @@ function Create() {
             return;
         }
         const pair: Pairwise = {title, owner: auth.uid, items: items };
-        const { id } = await firestore.collection('comparisons').add(pair);
+        const { id } = await firestore.collection('pairwise').add(pair);
         history.push(routes.COMPARISON.replace(routes.ID_IDENTIFIER, id));
     };
 
@@ -107,7 +151,7 @@ function Create() {
     }
 
     const onBackSpaceClicked = (idx: number) => {
-        if (items.length <= 2) {
+        if (items.length <= 3) {
             return;
         }
         items.splice(idx, 1);
@@ -138,37 +182,59 @@ function Create() {
     //                 helperText={}
     return (
         <div className={classes.root}>
-        <TextField
-            autoFocus
-            error={shouldValidate && !title.length}
-            helperText={(shouldValidate && !title.length) && "Required field."}
-            required
-            fullWidth
-            id="outlined-required"
-            label="Title"
-            variant="outlined"
-            value={title}
-            onChange={handleTitleChange} />
-        {items.map((item, idx) => {
-            // JS:
-            const [error, helperText] = hasItemError(item);
-            return (
-                <Item
-                    {...{error, helperText}}
-                    variant="outlined"
-                    required                    
-                    label={`Item ${idx + 1}`}
-                    key={`item_${idx}`}
-                    index={idx} 
-                    focus={idx === lastAddedIdx}
-                    value={item}
-                    onValueChanged={handleItemChange} 
-                    onEnterClicked={onEnterClicked}
-                    onBackSpaceClicked={onBackSpaceClicked}
-                    onFocused={() => setLastAdded(-1)} />)
-        })}
-        <Button onClick={onAddClick}>Add</Button>
-        <Button variant="contained" onClick={onCreateClick}>Create</Button>
+            <Paper className={classes.paper}>
+            <Typography variant="h4" className={classes.heading}>
+                Create pairwise
+            </Typography>
+            <Typography variant="h6" className={classes.title}>
+                Title
+            </Typography>
+            <TextField
+                className={classes.title}
+                autoFocus
+                error={shouldValidate && !title.length}
+                helperText={(shouldValidate && !title.length) && "Required field."}
+                required
+                fullWidth
+                id="outlined-required"
+                label="Title"
+                variant="outlined"
+                value={title}
+                onChange={handleTitleChange} />
+            <Typography variant="h6" className={classes.title}>
+                Comparisons
+            </Typography>
+            <div className={classes.itemsContainer}>
+                {items.map((item, idx) => {
+                    // JS:
+                    const [error, helperText] = hasItemError(item);
+                    return (
+                        <div 
+                            key={`item_${idx}`}
+                            className={classes.itemContainer}>
+                            <Item
+                                className={classes.item}
+                                {...{error, helperText}}
+                                variant="outlined"
+                                required
+                                label={`Item ${idx + 1}`}
+                                index={idx} 
+                                focus={idx === lastAddedIdx}
+                                value={item}
+                                onValueChanged={handleItemChange} 
+                                onEnterClicked={onEnterClicked}
+                                onBackSpaceClicked={onBackSpaceClicked}
+                                onFocused={() => setLastAdded(-1)} />
+                        </div>)
+                })}
+            </div>
+            <div className={classes.itemContainer} style={{ width: '100%'}}>
+                <Button className={classes.add} variant="outlined" onClick={onAddClick}><AddIcon/></Button>
+            </div>
+            <div className={classes.footer}>
+                <Button className={classes.create} color="primary" variant="contained" onClick={onCreateClick}>Create</Button>
+            </div>
+        </Paper>
     </div>
     );
 }
