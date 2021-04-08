@@ -228,7 +228,7 @@ function Comparison() {
         return (
             <React.Fragment>
                 <Button onClick={exit}>Exit</Button>
-                <Result results={comparison.result} pairs={pair.items}></Result>
+                <Result results={comparison.result} pairs={pair.items} generatedPairs={pairs}></Result>
             </React.Fragment>
         );
     }
