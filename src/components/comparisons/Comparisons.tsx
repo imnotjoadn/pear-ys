@@ -1,18 +1,35 @@
 import React from 'react';
-import { useSelector, connect, ConnectedProps } from 'react-redux';
-import { compose } from 'redux';
+import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/reducers';
-import { useFirestoreConnect, isLoaded, isEmpty, FirebaseReducer, firestoreConnect } from 'react-redux-firebase'
+import { useFirestoreConnect, isLoaded, isEmpty, FirebaseReducer } from 'react-redux-firebase'
+import { createStyles, List, ListItem, ListItemText, makeStyles, Paper, Typography } from '@material-ui/core';
 import { Pairwise } from '../../lib/pair';
 
 import * as routes from '../../constants/routes';
-// type PropsFromRedux = ConnectedProps<typeof connector>
-// type Props = PropsFromRedux & {
-//     auth: FirebaseReducer.AuthState; 
-// }
+import { useHistory } from 'react-router';
+
+const useStyles = makeStyles((theme) =>
+    createStyles({
+        root: {
+            margin: theme.spacing(3),
+            padding: theme.spacing(2),
+        },
+        title: {
+
+        },
+        list: {
+
+        },
+        listItem: {
+
+        },
+    })
+);
 
 function Comparisons() {
-    const {uid} = useSelector<RootState, FirebaseReducer.AuthState>(state => state.firebase.auth);
+    const { uid } = useSelector<RootState, FirebaseReducer.AuthState>(state => state.firebase.auth);
+    const classes = useStyles();
+    const history = useHistory();
 
     useFirestoreConnect([
         {
@@ -21,36 +38,29 @@ function Comparisons() {
             storeAs: 'list'
         }
     ]);
+    const comparisons = useSelector<RootState, Pairwise[]>(state => state.firestore.ordered.list);
 
-    const comparisons = useSelector<RootState, Pairwise[]>(state => state.firestore.ordered.list);   
+    const handleListClick = (id: string) => {
+        history.push(routes.COMPARISON.replace(routes.ID_IDENTIFIER, id));
+    }
 
     if (!isLoaded(comparisons)) {
         return <span>Loading...</span>
     }
- 
+
     if (isEmpty(comparisons)) {
         return <span>No comparisons...</span>
     }
 
-    // http://react-redux-firebase.com/docs/api/useFirestoreConnect.html?q=
-
-    // forEach // for (x of Y)
-    // ArrayLike
-    
-    // Object.
-    // Iterate over the keys of an object.    
-    // for in - includes prototypes
-    // for of ES5 === foreach     
-
     return (
-        <React.Fragment>
+        <Paper className={classes.root}>
+            <Typography variant="h6" className={classes.title}>Your Comparisons</Typography>
             <ul>
                 {comparisons && comparisons.map((comparison) =>
                     <li key={comparison.id}><a href={routes.COMPARISON.replace(routes.ID_IDENTIFIER, comparison.id!)}>{comparison.title}</a></li>)}
-            </ul>
-        </React.Fragment>
+            </ul>            
+        </Paper>
     );
 }
 
 export default Comparisons;
-  
